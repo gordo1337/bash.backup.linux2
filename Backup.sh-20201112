@@ -1,15 +1,15 @@
 #!/bin/bash
-#
-## creates daily backup of selected directories
-#
+#----------------------------------------------#
+# Creates daily backup of selected directories #
+#----------------------------------------------#
 
-## variables
+# Variables
 LOG_LOC="/var/log/mybackup.log"
-##
+#
 
-##functions
-function check_dir_local{
-        #check for dir list file
+## Functions start
+function check_dir_local {
+# Check for dir list file
         if [ ! -s "/backup_dirs.conf" ]
         then
           echo "Please create a list of directories to backup by creating a backup_dir.conf file in the root directory"
@@ -26,37 +26,37 @@ function check_backup_local {
 }
 
 function check_schedule {
-       #check to see if the script exists in daily cron directory
+# Check to see if the script exists in daily cron directory
        if [ ! -s "/etc/cron.daily/make_backup" ]
        then
-                 #copy script to cron.daily dir
-                 sudo cp make_backup.sh /etc/cron.daily/make_backup            #Why sudo? The Cron directory is owned by root.
-                 echo "The backup has been set to run daily"
-                 echo "The exact run time is in the /etc/crontab file."
-                 exit 1
+          # Copy script to cron.daily dir
+          sudo cp make_backup.sh /etc/cron.daily/make_backup            #Why sudo? The Cron directory is owned by root.
+          echo "The backup has been set to run daily"
+          echo "The exact run time is in the /etc/crontab file."
+          exit 1
        fi
 }
 
 function perform_backup {
-        #get backup location
-        back_path=$(cat /backup_local.conf)
-        echo "starting backup. . ." > $LOG_LOC
-        #for each dir, archive and compress to backup location
+          # Get backup location
+          back_path=$(cat /backup_local.conf)
+          echo "starting backup. . ." > $LOG_LOC
+          # For each dir, archive and compress to backup location
         
         while read dir_path
         do
-             #get backup dir name
-             dir_name=$(basename $dir_path)
+          # Get backup dir name
+          dir_name=$(basename $dir_path)
              
-             #create filename for compressed backup
-             filename=$backup_path$dir_name.tar.gz
+          # Create filename for compressed backup
+          filename=$backup_path$dir_name.tar.gz
              
-             #archive dirs and compress archive
-             tar -zcf $filename $dir_path 2>> $LOG_LOC
+          # Archive dirs and compress archive
+          tar -zcf $filename $dir_path 2>> $LOG_LOC
 
-             #change ownership of  backup files
-             chown root:root $filename
-             echo "Backing up of $dir_name completed." >> $LOG_LOC  
+          # Change ownership of  backup files
+          chown root:root $filename
+          echo "Backing up of $dir_name completed." >> $LOG_LOC  
         done < /backup_dirs.conf
 
         echo "Backup complete at:" >> $LOG_LOC
