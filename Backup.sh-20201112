@@ -51,7 +51,7 @@ function perform_backup {
           filename=$backup_path$dir_name.tar.gz
              
           # Archive dirs and compress archive
-          tar -zcf "$filename" "$dir_path" 2>> $LOG_LOC
+          tar -zcf "$filename" "$dir_path" | openssl enc -e -aes256 -out backup_secured.tar.gz 2>> $LOG_LOC
 
           # Change ownership of  backup files
           chown root:root "$filename"
