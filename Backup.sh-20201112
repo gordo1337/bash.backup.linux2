@@ -1,11 +1,10 @@
 #!/bin/bash
 #----------------------------------------------#
-# Creates daily backup of selected directories #
+#-----Daily backup of selected directories-----#
 #----------------------------------------------#
 
 # Variables
 LOG_LOC="/var/log/mybackup.log"
-#
 
 ## Functions start
 function check_dir_local {
@@ -39,30 +38,30 @@ function check_schedule {
 
 function perform_backup {
           # Get backup location
-          back_path=$(cat /backup_local.conf)
+          backup_path=$(cat /backup_local.conf)
           echo "starting backup. . ." > $LOG_LOC
           # For each dir, archive and compress to backup location
         
-        while read dir_path
+        while read -r dir_path
         do
           # Get backup dir name
-          dir_name=$(basename $dir_path)
+          dir_name=$(basename "$dir_path")
              
           # Create filename for compressed backup
           filename=$backup_path$dir_name.tar.gz
              
           # Archive dirs and compress archive
-          tar -zcf $filename $dir_path 2>> $LOG_LOC
+          tar -zcf "$filename" "$dir_path" 2>> $LOG_LOC
 
           # Change ownership of  backup files
-          chown root:root $filename
+          chown root:root "$filename"
           echo "Backing up of $dir_name completed." >> $LOG_LOC  
         done < /backup_dirs.conf
 
-        echo "Backup complete at:" >> $LOG_LOC
-        date >> $LOG_LOC
+          echo "Backup complete at:" >> $LOG_LOC
+          date >> $LOG_LOC
 }
-## end of functions
+## End of functions
 
  check_dir_loc
 .check_backup_loc
