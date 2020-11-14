@@ -1,7 +1,7 @@
 #!/bin/bash
-#----------------------------------------------#
-#-----Daily backup of selected directories-----#
-#----------------------------------------------#
+
+# Daily backup of selected directories
+
 
 # Variables
 LOG_LOC="/var/log/mybackup.log"
